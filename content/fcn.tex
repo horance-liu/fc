@@ -1,0 +1,159 @@
+\section{Fully Connected Networks}
+\label{sec:fcn}
+
+\begin{frame}
+  \begin{center}
+    \Huge{\textcolor{red}{Fully Connected Networks}}
+  \end{center}
+\end{frame}
+
+\subsection{FCN}
+
+\begin{frame}{Notation}
+ \begin{itemize}
+   \item \alert{$ {n_{\ell}} $}: 网络层数，其中第$0$层为输入层，第$n_{\ell}$层为输出层
+   \item \alert{$ {s_{\ell}} $}: 第$\ell$层的节点数，$ \ell = 0, 1, ..., n_{\ell} $
+   \item \alert{$ w_{ji}^{(\ell)} $}: 第$(\ell-1)$层节点$i$与第$\ell$层节点$j$之间的权重，$ \ell = 1, ..., n_{\ell} $
+   \item \alert{$ b_i^{(\ell)} $}: 第$\ell$层节点$i$的偏置项，$ \ell = 1, ..., n_{\ell} $
+   \item \alert{$ a_i^{(\ell)} $}: 第$\ell$层节点$i$的输出，$ \ell = 1, ..., n_{\ell}, x = a^{(0)}, y = a^{(n_{\ell})} $
+   \item \alert{$ z_i^{(\ell)} $}: 第$\ell$层节点$i$的权重和，$ \ell = 1, ..., n_{\ell} $
+   \item \alert{$ \delta _i^{(\ell)} $}: 第$\ell$层节点$i$的误差项，$ \ell = 1, ..., n_{\ell} $
+   \item \alert{$ S = \{ ({x^{(i)}},{y^{(i)}});i = 1,2,...,m\} $}: 样本空间
+ \end{itemize}
+\end{frame}
+
+\begin{frame}{目标函数}
+\begin{block}{单个样本}
+\[\begin{aligned}
+  J(w,b;x,y) =  & \frac{1}{2}{\left( {{h_{w,b}}(x,y) - y} \right)^2} \\ 
+\end{aligned} \]
+\end{block}
+
+\begin{block}{$m$个样本}
+\[\begin{aligned}
+  J(w,b) =  & \frac{1}{m}\sum\limits_{i = 1}^m {J\left( {w,b;{x^{(i)}},{y^{(i)}}} \right)} \\ 
+\end{aligned} \]
+\end{block}
+
+\begin{block}{正则化}
+\[\begin{aligned}
+  J(w,b) =  & \frac{1}{m}\sum\limits_{i = 1}^m {J\left( {w,b;{x^{(i)}},{y^{(i)}}} \right)}  + \frac{\lambda }{2}\sum\limits_{\ell  = 1}^{{n_{\ell} - 1}} {\sum\limits_{i = 1}^{{s_\ell }} {\sum\limits_{j = 1}^{{s_{(\ell  + 1)}}} {{{\left( {w_{ji}^{(\ell )}} \right)}^2}} } }  \\ 
+\end{aligned} \]
+
+\end{block}
+\end{frame}
+
+\begin{frame}{前向输出}
+\begin{block}{向量}
+\[\begin{aligned}
+  {z^{(\ell)}} =  & {w^{(\ell)}}{a^{(\ell-1)}} + {b^{(\ell)}} \\ 
+  {a^{(\ell)}} =  & f({z^{(\ell)}}) \\ 
+  {a^{(0)}} =  & x \\
+  {a^{({n_{\ell}})}} = & y \\
+\end{aligned} \]
+\end{block}
+
+\begin{block}{标量}
+\[\begin{aligned}
+  z_j^{(\ell )} =  & \sum\limits_{i \in upstream(j)} {\left( {w_{ji}^{(\ell )}a_i^{(\ell  - 1)} + {b_{j}^{(\ell )}}} \right)}  \\ 
+  a_j^{(\ell )} =  & f\left( {z_j^{(\ell )}} \right) \\ 
+  j =  & 1,2,...,{s_\ell }; \ell = 1,2,...,{n_\ell } \\  
+\end{aligned} \]
+\end{block}
+\end{frame}
+
+\begin{frame}{反向传播}
+\begin{block}{向量}
+\[{\delta ^{(\ell)}} = \left\{ \begin{gathered}
+  {({w^{(\ell + 1)}})^T}{\delta ^{(\ell + 1)}} \circ f\,'({z^{(\ell)}});{\text{  }}\ell \ne {n_\ell} \hfill \\
+  ({a^{(\ell)}} - y) \circ f\,'({z^{(\ell)}}); {\text{  }}\ell = {n_\ell} \hfill \\ 
+\end{gathered}  \right.\]
+\end{block}
+
+\begin{block}{标量}
+\[\begin{aligned}
+  \delta _j^{(\ell )} =  & \left\{ \begin{gathered}
+  f\,'\left( {z_j^{(\ell )}} \right)\sum\limits_{k \in downstream(j)} {w_{kj}^{(\ell  + 1)}\delta _k^{(\ell  + 1)}} ;{\text{   }}\ell  \ne {n_\ell } \hfill \\
+  f\,'\left( {z_j^{(\ell )}} \right)\left( {a_j^{(\ell )} - {y_j}} \right);{\text{                   }}\ell  = {n_\ell } \hfill \\ 
+\end{gathered}  \right. \\ 
+  j =  & 1,2,...,{s_\ell } \\ 
+  \ell  =  & 1,2,...,{n_\ell } \\ 
+\end{aligned} \]
+\end{block}
+\end{frame}
+
+\begin{frame}{梯度计算}
+\begin{block}{向量}
+\[\begin{aligned}
+  {\nabla _{{w^{(\ell )}}}}J(w,b;x,y) =  & {\delta ^{(\ell)}}{({a^{(\ell-1)}})^T} \\ 
+  {\nabla _{{b^{(\ell )}}}}J(w,b;x,y) =  & {\delta ^{(\ell)}} \\ 
+  \ell = 1, ..., n_{\ell}
+\end{aligned} \]
+\end{block}
+
+\begin{block}{标量}
+\[\begin{aligned}
+  {\nabla _{w_{ji}^\ell }}J(w,b;x,y) =  & \delta _j^\ell a_i^{(\ell  - 1)} \\ 
+  {\nabla _{b_j^\ell }}J(w,b;x,y) =  & \delta _j^\ell  \\ 
+  j =  & 1,2,...,{s_\ell };   \ell = 1,2,...,{n_\ell } \\ 
+\end{aligned} \]
+
+\end{block}
+\end{frame}
+
+
+\begin{frame}{变化量}
+
+\begin{block}{向量}
+\[\begin{aligned}
+  \Delta {w^{(\ell )}} \leftarrow  & \Delta {w^{(\ell )}} + {\nabla _{{w^{(\ell )}}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
+  \Delta {b^{(\ell )}} \leftarrow  & \Delta {b^{(\ell )}} + {\nabla _{{b^{(\ell )}}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
+  i =  & 1,2,...,m; \ell  = 1,2,...,{n_\ell }  \\
+\end{aligned} \]
+\end{block}
+
+\begin{block}{标量}
+\[\begin{aligned}
+  \Delta w_{jk}^{(\ell )} \leftarrow  & \Delta w_{jk}^{(\ell )} + {\nabla _{w_{jk}^{(\ell )}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
+  \Delta b_j^{(\ell )} \leftarrow  & \Delta b_j^{(\ell )} + {\nabla _{b_j^{(\ell )}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
+  i =  & 1,2,...,m; j = 1,2,...,{s_\ell }; k = 1,2,...,{s_{\ell  - 1}}; \ell = 1,2,...,{n_\ell } \\ 
+\end{aligned} \]
+\end{block}
+\end{frame}
+
+\begin{frame}{权重更新}
+
+\begin{block}{向量}
+\[\begin{aligned}
+  {w^{(\ell )}} \leftarrow  & {w^{(\ell )}} - \alpha \left( {\frac{{\Delta {w^{(\ell )}}}}{m}} \right) \\ 
+  {b^{(\ell )}} \leftarrow  & {b^{(\ell )}} - \alpha \frac{{\Delta {b^{(\ell )}}}}{m} \\ 
+  \ell  = & 1,2,...,{n_\ell }  \\
+\end{aligned} \]
+\end{block}
+
+\begin{block}{正则项}
+\[\begin{aligned}
+  {w^{(\ell )}} \leftarrow  & {w^{(\ell )}} - \alpha \left( {\frac{{\Delta {w^{(\ell )}}}}{m} + \lambda {w^{(\ell )}}} \right) \\ 
+\end{aligned} \]
+\end{block}
+\end{frame}
+
+
+\begin{frame}{权重更新}
+
+\begin{block}{标量}
+\[\begin{aligned}
+  w_{jk}^{(\ell )} \leftarrow  & w_{jk}^{(\ell )} - \alpha \left( {\frac{{\Delta w_{jk}^{(\ell )}}}{m}} \right) \\ 
+  b_j^{(\ell )} \leftarrow  & b_j^{(\ell )} - \alpha \frac{{\Delta b_j^{(\ell )}}}{m} \\ 
+  j =  & 1,2,...,{s_\ell }; k = 1,2,...,{s_{\ell  - 1}}; \ell  =  1,2,...,{n_\ell } \\ 
+\end{aligned} \]
+\end{block}
+
+\begin{block}{正则项}
+\[\begin{aligned}
+  w_{jk}^{(\ell )} \leftarrow  & w_{jk}^{(\ell )} - \alpha \left( {\frac{{\Delta w_{jk}^{(\ell )}}}{m} + \lambda w_{jk}^{(\ell )}} \right) \\
+\end{aligned} \]
+\end{block}
+
+
+\end{frame}
