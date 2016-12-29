@@ -1,0 +1,27 @@
+x  = tf.placeholder("float", [None, 784])  
+y_ = tf.placeholder("float", [None,10])
+
+W = tf.Variable(tf.zeros([784,10]))
+b = tf.Variable(tf.zeros([10]))
+
+y = tf.nn.softmax(tf.matmul(x,W) + b)
+
+cross_entropy = -tf.reduce_sum(y_*tf.log(y))
+train_step = tf.train.AdamOptimizer(1e−4).minimize(cross_entropy)
+
+epoch.times {
+  batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+  sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})	
+}
+
+epoch.times {
+  batch_xs, batch_ts = train.next_batch(batch_size)
+
+  batch_ys = net.forward(batch_xs)
+
+  delta = loss_function(batch_ys, batch_ts)
+
+  batch_grads = net.backword(delta)
+
+  optimizer.update_weights(batch_grads, batch_size)
+}

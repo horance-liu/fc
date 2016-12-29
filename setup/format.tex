@@ -7,13 +7,6 @@
 \usepackage[T1]{fontenc}
 \usepackage{tabularx,multirow,multicol,keystroke,subfigure,longtable}
 
-\usepackage{tikz}
-\usetikzlibrary{mindmap,trees}
-
-\usepackage{amsmath,amssymb}
-\usepackage{bm}
-
-
 % 定制代码输出
 \definecolor{lstbgcolor}{rgb}{0.9,0.9,0.9}
 \usepackage{listings} %代码样式
@@ -21,7 +14,7 @@
 \usepackage{xcolor}
 
 %% 所要粘贴代码的编程语言
-\lstloadlanguages{{[LaTeX]TeX}, {[ISO]C++}, {Java}, {Ruby}, {Scala}}
+\lstloadlanguages{{[LaTeX]TeX}, {[ISO]C++}, {Java}, {Ruby}, {Scala}, {Python}}
 
 %% 设置listings宏包的一些全局样式
 %% 参考http://hi.baidu.com/shawpinlee/blog/item/9ec431cbae28e41cbe09e6e4.html
@@ -32,7 +25,7 @@ keywordstyle=\color{blue!70},
 commentstyle=\color{red!50!green!50!blue!50},
 frame=shadowbox,
 backgroundcolor=\color{yellow!20},
-rulesepcolor=\color{red!20!green!20!blue!20}
+% rulesepcolor=\color{red!20!green!20!blue!20}
 numberbychapter=true,
 breakatwhitespace=true,
 showstringspaces=false,              %% 设定是否显示代码之间的空格符号
@@ -60,7 +53,9 @@ belowcaptionskip=1em
    prebreak=\textbackslash,
    breakindent=1em,
    % keywordstyle=\bfseries, %% 关键字高亮
-   morekeywords={alignas, alignof, char16_t, char32_t, constexpr, decltype, noexcept, nullptr, static_assert, thread_local}
+   morekeywords={include, alignas, alignof, char16_t, char32_t, constexpr, decltype, noexcept, nullptr, static_assert, thread_local, override,
+   def, as, as_procedure, sequential, req, call, concurrent, timer_prot, asyn, sync, apply, call, finally, on_fail, optional, ind
+   }
    %frame=leftline,                     %% 给代码加框
    %framerule=2pt,
    %rulesep=5pt
@@ -100,18 +95,33 @@ belowcaptionskip=1em
   {\lstset{style=Java, #1}}
   {}
 
+
+\lstdefinestyle{Python}{
+   language=Python,
+   texcl=true,
+   prebreak=\textbackslash,
+   breakindent=1em,
+   %frame=leftline,                     %% 给代码加框
+   %framerule=2pt,
+   %rulesep=5pt
+}
+
+\lstnewenvironment{python}[1][]
+  {\lstset{style=Python, #1}}
+  {}  
+
 % CJK packages
 \usepackage{xeCJK}
 %\setCJKmainfont{KaiTi}
 %\setCJKmainfont{Adobe Heiti Std}
 
-% 设置缺省中文字体
+%% 设置缺省中文字体
 \setCJKmainfont[BoldFont={Adobe Heiti Std}, ItalicFont={Adobe Kaiti Std}]{Adobe Song Std}   %  FZBaoSongZ04
-% 设置中文无衬线字体
+%% 设置中文无衬线字体
 \setCJKsansfont[BoldFont={Adobe Heiti Std}, ItalicFont={Adobe Kaiti Std}]{Adobe Kaiti Std}  
-% 设置等宽字体
+%% 设置等宽字体
 \setCJKmonofont{Adobe Heiti Std}                            
-\setCJKmonofont{Monaco}                            
+%\setCJKmonofont{Monaco}                            
 
 %% 英文衬线字体
 \setmainfont{Lucida Bright}                                  
@@ -131,9 +141,9 @@ belowcaptionskip=1em
 \setCJKfamilyfont{youyuan}{Adobe Kaiti Std}
 
 %%自定义英文字体
-%\newfontfamily\couriernew{Lucida Grande}
-%\newfontfamily\optima{Optima}
-%\newfontfamily\lucida{Lucida Bright}
+\newfontfamily\couriernew{Lucida Grande}
+\newfontfamily\optima{Optima}
+\newfontfamily\lucida{Lucida Bright}
 
 \newcommand{\ascii}[1]{{\sffamily #1}}
 \newcommand{\speak}[1]{{\itshape #1}}
@@ -165,7 +175,6 @@ belowcaptionskip=1em
 \newtheorem{regulation}{规则}[section]
 \newtheorem{advise}{建议}[section]
 \newtheorem{concept}{概念}[section]
-\newtheorem{algo}{Algorithm}[section]
 
 % Graphix
 \usepackage{graphicx}
@@ -188,6 +197,9 @@ belowcaptionskip=1em
 % 中文图表
 \renewcommand\figurename{图}
 \renewcommand\tablename{表}
+
+% 行内代码
+\newcommand{\code}[1]{\ascii{\scriptsize{\texttt{#1}}}}
 
 %%% Local Variables:
 %%% mode: LaTeX
