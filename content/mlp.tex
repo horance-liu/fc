@@ -18,48 +18,54 @@
    \item \alert{$ a_i^{(\ell)} $}: 第$\ell$层节点$i$的输出，$ \ell = 1, ..., n_{\ell}, x = a^{(0)}, y = a^{(n_{\ell})} $
    \item \alert{$ z_i^{(\ell)} $}: 第$\ell$层节点$i$的权重和，$ \ell = 1, ..., n_{\ell} $
    \item \alert{$ \delta _i^{(\ell)} $}: 第$\ell$层节点$i$的误差项，$ \ell = 1, ..., n_{\ell} $
-   \item \alert{$ S = \{ ({x^{(i)}},{y^{(i)}});i = 1,2,...,m\} $}: 样本空间
+   \item \alert{$ S = \{ ({x^{(t)}},{y^{(t)}});t = 1,2,...,m\} $}: 样本空间
  \end{itemize}
 \end{frame}
 
 \begin{frame}{目标函数}
 \begin{block}{单个样本}
-\[\begin{aligned}
-  J(w,b;x,y) =  & \frac{1}{2}{\left( {{h_{w,b}}(x,y) - y} \right)^2} \\ 
-\end{aligned} \]
+\[J(w,b;x,y) = \frac{1}{2}{\left( {{h_{w,b}}(x,y) - y} \right)^2}\]
 \end{block}
 
 \begin{block}{$m$个样本}
-\[\begin{aligned}
-  J(w,b) =  & \frac{1}{m}\sum\limits_{i = 1}^m {J\left( {w,b;{x^{(i)}},{y^{(i)}}} \right)} \\ 
-\end{aligned} \]
+\[J(w,b) = \frac{1}{m}\sum\limits_{t = 1}^m {J\left( {w,b;{x^{(t)}},{y^{(t)}}} \right)} \]
 \end{block}
 
 \begin{block}{正则化}
-\[\begin{aligned}
-  J(w,b) =  & \frac{1}{m}\sum\limits_{i = 1}^m {J\left( {w,b;{x^{(i)}},{y^{(i)}}} \right)}  + \frac{\lambda }{2}\sum\limits_{\ell  = 1}^{{n_{\ell} - 1}} {\sum\limits_{i = 1}^{{s_\ell }} {\sum\limits_{j = 1}^{{s_{(\ell  + 1)}}} {{{\left( {w_{ji}^{(\ell )}} \right)}^2}} } }  \\ 
-\end{aligned} \]
-
+\[J(w,b) = \frac{1}{m}\sum\limits_{t = 1}^m {J\left( {w,b;{x^{(t)}},{y^{(t)}}} \right)}  + \frac{\lambda }{2}\sum\limits_{\ell  = 1}^{{n_\ell }} {\sum\limits_{i = 1}^{{s_{\ell  - 1}}} {\sum\limits_{j = 1}^{{s_\ell }} {{{\left( {w_{ji}^{(\ell )}} \right)}^2}} } } \]
 \end{block}
 \end{frame}
 
 \begin{frame}{前向输出}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.75\textwidth]{mlp-forward.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{前向输出}
 \begin{block}{向量}
-\[\begin{aligned}
-  {z^{(\ell)}} =  & {w^{(\ell)}}{a^{(\ell-1)}} + {b^{(\ell)}} \\ 
-  {a^{(\ell)}} =  & f({z^{(\ell)}}) \\ 
-  {a^{(0)}} =  & x \\
-  {a^{({n_{\ell}})}} = & y \\
-\end{aligned} \]
+\[\begin{gathered}
+  {z^{(\ell )}} = {w^{(\ell )}}{a^{(\ell  - 1)}} + {b^{(\ell )}} \hfill \\
+  {a^{(\ell )}} = f({z^{(\ell )}}) \hfill \\
+  {a^{(0)}} = x \quad y = {a^{({n_\ell })}} \hfill \\ 
+\end{gathered} \]
 \end{block}
 
 \begin{block}{标量}
-\[\begin{aligned}
-  z_j^{(\ell )} =  & \sum\limits_{i \in upstream(j)} {\left( {w_{ji}^{(\ell )}a_i^{(\ell  - 1)} + {b_{j}^{(\ell )}}} \right)}  \\ 
-  a_j^{(\ell )} =  & f\left( {z_j^{(\ell )}} \right) \\ 
-  j =  & 1,2,...,{s_\ell }; \ell = 1,2,...,{n_\ell } \\  
-\end{aligned} \]
+\[\begin{gathered}
+  z_i^{(\ell )} = \sum\limits_{h = 1}^{{s_{\ell  - 1}}} {\left( {w_{ih}^{(\ell )}a_h^{(\ell  - 1)} + b_i^{(\ell )}} \right)}  \hfill \\
+  a_i^{(\ell )} = f\left( {z_i^{(\ell )}} \right) \hfill \\
+  i = 1,2,...,{s_\ell } \quad \ell  = 1,2,...,{n_\ell } \hfill \\ 
+\end{gathered} \]
 \end{block}
+\end{frame}
+
+\begin{frame}{反向传播}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{mlp-backward.png}
+  \end{figure}
 \end{frame}
 
 \begin{frame}{反向传播}
@@ -71,53 +77,56 @@
 \end{block}
 
 \begin{block}{标量}
-\[\begin{aligned}
-  \delta _j^{(\ell )} =  & \left\{ \begin{gathered}
-  f\,'\left( {z_j^{(\ell )}} \right)\sum\limits_{k \in downstream(j)} {w_{kj}^{(\ell  + 1)}\delta _k^{(\ell  + 1)}} ;{\text{   }}\ell  \ne {n_\ell } \hfill \\
-  f\,'\left( {z_j^{(\ell )}} \right)\left( {a_j^{(\ell )} - {y_j}} \right);{\text{                   }}\ell  = {n_\ell } \hfill \\ 
-\end{gathered}  \right. \\ 
-  j =  & 1,2,...,{s_\ell } \\ 
-  \ell  =  & 1,2,...,{n_\ell } \\ 
-\end{aligned} \]
+\[\begin{gathered}
+  \delta _i^{(\ell )} = \left\{ \begin{gathered}
+  f\,'\left( {z_i^{(\ell )}} \right)\sum\limits_{j = 1}^{{s_{\ell  + 1}}} {w_{ji}^{(\ell  + 1)}\delta _j^{(\ell  + 1)}} {\text{   }}\ell  \ne {n_\ell } \hfill \\
+  f\,'\left( {z_i^{(\ell )}} \right)\left( {a_i^{(\ell )} - {y_i}} \right){\text{       }}\ell  = {n_\ell } \hfill \\ 
+\end{gathered}  \right. \hfill \\
+  i = 1,2,...,{s_\ell } \hfill \\ 
+\end{gathered} \]
 \end{block}
 \end{frame}
 
 \begin{frame}{梯度计算}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{mlp-grad.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{梯度计算}
 \begin{block}{向量}
-\[\begin{aligned}
-  {\nabla _{{w^{(\ell )}}}}J(w,b;x,y) =  & {\delta ^{(\ell)}}{({a^{(\ell-1)}})^T} \\ 
-  {\nabla _{{b^{(\ell )}}}}J(w,b;x,y) =  & {\delta ^{(\ell)}} \\ 
-  \ell = 1, ..., n_{\ell}
-\end{aligned} \]
+\[\begin{gathered}
+  {\nabla _{{w^{(\ell )}}}}J(w,b;x,y) = {\delta ^{(\ell )}}{\left( {{a^{(\ell  - 1)}}} \right)^T} \hfill \\
+  {\nabla _{{b^{(\ell )}}}}J(w,b;x,y) = {\delta ^{(\ell )}} \hfill \\
+  \ell  = 1,2,...,{n_\ell } \hfill \\ 
+\end{gathered} \]
 \end{block}
 
 \begin{block}{标量}
-\[\begin{aligned}
-  {\nabla _{w_{ji}^\ell }}J(w,b;x,y) =  & \delta _j^\ell a_i^{(\ell  - 1)} \\ 
-  {\nabla _{b_j^\ell }}J(w,b;x,y) =  & \delta _j^\ell  \\ 
-  j =  & 1,2,...,{s_\ell };   \ell = 1,2,...,{n_\ell } \\ 
-\end{aligned} \]
-
+\[\begin{gathered}
+  {\nabla _{w_{ih}^{(\ell )}}}J(w,b;x,y) = \delta _i^\ell a_h^{(\ell  - 1)} \hfill \\
+  {\nabla _{b_i^{(\ell )}}}J(w,b;x,y) = \delta _i^\ell  \hfill \\
+  i = 1,2,...,{s_\ell } \quad \ell  = 1,2,...,{n_\ell } \hfill \\ 
+\end{gathered} \]
 \end{block}
 \end{frame}
 
-
 \begin{frame}{变化量}
-
 \begin{block}{向量}
 \[\begin{aligned}
-  \Delta {w^{(\ell )}} \leftarrow  & \Delta {w^{(\ell )}} + {\nabla _{{w^{(\ell )}}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
-  \Delta {b^{(\ell )}} \leftarrow  & \Delta {b^{(\ell )}} + {\nabla _{{b^{(\ell )}}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
-  i =  & 1,2,...,m; \ell  = 1,2,...,{n_\ell }  \\
+  \Delta {w^{(\ell )}} \leftarrow \Delta {w^{(\ell )}} + {\nabla _{{w^{(\ell )}}}}J\left( {w,b;{x^{(t)}},{y^{(t)}}} \right) \\ 
+  \Delta {b^{(\ell )}} \leftarrow \Delta {b^{(\ell )}} + {\nabla _{{b^{(\ell )}}}}J\left( {w,b;{x^{(t)}},{y^{(t)}}} \right) \\ 
+  t = 1,2,...,m;\ell  = 1,2,...,{n_\ell } \\ 
 \end{aligned} \]
 \end{block}
 
 \begin{block}{标量}
-\[\begin{aligned}
-  \Delta w_{jk}^{(\ell )} \leftarrow  & \Delta w_{jk}^{(\ell )} + {\nabla _{w_{jk}^{(\ell )}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
-  \Delta b_j^{(\ell )} \leftarrow  & \Delta b_j^{(\ell )} + {\nabla _{b_j^{(\ell )}}}J(w,b;{x^{(i)}},{y^{(i)}}) \\ 
-  i =  & 1,2,...,m; j = 1,2,...,{s_\ell }; k = 1,2,...,{s_{\ell  - 1}}; \ell = 1,2,...,{n_\ell } \\ 
-\end{aligned} \]
+\[\begin{gathered}
+  \Delta w_{ih}^{(\ell )} \leftarrow \Delta w_{ih}^{(\ell )} + {\nabla _{w_{ih}^{(\ell )}}}J\left( {w,b;{x^{(t)}},{y^{(t)}}} \right) \hfill \\
+  \Delta b_i^{(\ell )} \leftarrow \Delta b_i^{(\ell )} + {\nabla _{b_i^{(\ell )}}}J\left( {w,b;{x^{(t)}},{y^{(t)}}} \right) \hfill \\
+  t = 1,2,...,m;\ell  = 1,2,...,{n_\ell };i = 1,2,...,{s_\ell };h = 1,2,...,{s_{\ell  - 1}} \hfill \\ 
+\end{gathered} \]
 \end{block}
 \end{frame}
 
@@ -142,18 +151,18 @@
 \begin{frame}{权重更新}
 
 \begin{block}{标量}
-\[\begin{aligned}
-  w_{jk}^{(\ell )} \leftarrow  & w_{jk}^{(\ell )} - \alpha \left( {\frac{{\Delta w_{jk}^{(\ell )}}}{m}} \right) \\ 
-  b_j^{(\ell )} \leftarrow  & b_j^{(\ell )} - \alpha \frac{{\Delta b_j^{(\ell )}}}{m} \\ 
-  j =  & 1,2,...,{s_\ell }; k = 1,2,...,{s_{\ell  - 1}}; \ell  =  1,2,...,{n_\ell } \\ 
-\end{aligned} \]
+\[\begin{gathered}
+  w_{ih}^{(\ell )} \leftarrow w_{ih}^{(\ell )} - \alpha \frac{{\Delta w_{ih}^{(\ell )}}}{m} \hfill \\
+  b_i^{(\ell )} \leftarrow b_i^{(\ell )} - \alpha \frac{{\Delta b_i^{(\ell )}}}{m} \hfill \\
+  \ell  = 1,2,...,{n_\ell };i = 1,2,...,{s_\ell };h = 1,2,...,{s_{\ell  - 1}} \hfill \\ 
+\end{gathered} \]
 \end{block}
 
 \begin{block}{正则项}
-\[\begin{aligned}
-  w_{jk}^{(\ell )} \leftarrow  & w_{jk}^{(\ell )} - \alpha \left( {\frac{{\Delta w_{jk}^{(\ell )}}}{m} + \lambda w_{jk}^{(\ell )}} \right) \\
-\end{aligned} \]
+\[\begin{gathered}
+  w_{ih}^{(\ell )} \leftarrow w_{ih}^{(\ell )} - \alpha \left( {\frac{{\Delta w_{ih}^{(\ell )}}}{m} + \lambda w_{ih}^{(\ell )}} \right) \hfill \\
+  \ell  = 1,2,...,{n_\ell };i = 1,2,...,{s_\ell };h = 1,2,...,{s_{\ell  - 1}} \hfill \\ 
+\end{gathered} \]
 \end{block}
-
 
 \end{frame}
